@@ -1,0 +1,4 @@
+node_modules
+dist
+# Datos crudos del tracker: pesados y privados, se quedan solo en tu PC
+raw

@@ -1,0 +1,24 @@
+{
+  "name": "r6-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "data": "node scripts/ingest.mjs raw/seasonData.js raw/allMatches public/data && node scripts/build-derived.mjs public/data",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "derived": "node scripts/build-derived.mjs public/data",
+    "seasons": "node scripts/detect-season-resets.mjs raw/seasonData.js public/data --write"
+  },
+  "dependencies": {
+    "echarts": "^5.5.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
+  }
+}
