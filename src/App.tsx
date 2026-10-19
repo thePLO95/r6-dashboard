@@ -29,7 +29,10 @@ export default function App() {
       const latest = i.seasons[0];
       const games = (n: string) => ag?.players[n]?.[latest]?.all?.n ?? 0;   // partidas (todas las playlists) en la última season
       const top = [...i.players].sort((a, b) => games(b.name) - games(a.name)).slice(0, 5).map((p) => p.name);
-      setIndex(i); setSel(top); setFocus(top[0] ?? ''); setSeason(latest);
+      // Selector ordenado por partidas totales (todas las seasons y playlists), de más a menos
+      const total = (n: string) => Object.values(ag?.players[n] ?? {}).reduce((sum, s) => sum + (s.all?.n ?? 0), 0);
+      const players = [...i.players].sort((a, b) => total(b.name) - total(a.name) || a.name.localeCompare(b.name));
+      setIndex({ ...i, players }); setSel(top); setFocus(top[0] ?? ''); setSeason(latest);
     });
   }, []);
   useEffect(() => { sel.filter((n) => !cache[n]).forEach((n) => loadPlayer(n).then((p) => setCache((c) => ({ ...c, [n]: p })))); }, [sel]);
