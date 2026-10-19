@@ -43,9 +43,8 @@ export default function MapsTab({ name }: { name: string }) {
       </div>
       {noRounds && <p>⚠️ Antes de Y10S1 no hay datos por ronda: solo se muestra el % de victoria global.</p>}
       {rows.length === 0 ? <p>Sin partidas con mapa para este filtro (el mapa se registra desde Y9S2).</p> : (<>
-        <div ref={chartRef} style={{ width: '100%', height: 90 + top.length * 34 }} />
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead><tr><th align="left">Mapa</th><th style={th}>Partidas</th><th style={th}>% Victoria</th><th style={th}>Ataque</th><th style={th}>Defensa</th></tr></thead>
             <tbody>{rows.map((r) => { const mp = meta?.maps[r.map]; return (
               <tr key={r.map} style={{ borderTop: '1px solid #8883' }}>
@@ -57,6 +56,8 @@ export default function MapsTab({ name }: { name: string }) {
           </table>
         </div>
         <p style={{ fontSize: 13, opacity: 0.7 }}>% Victoria = victorias / (victorias + derrotas); abandonos, rollbacks y empates no cuentan. Ataque y Defensa = % de rondas ganadas, entre paréntesis las rondas jugadas.</p>
+        <h3 style={{ margin: '24px 0 8px' }}>% de victoria por mapa (top 15 más jugados)</h3>
+        <div ref={chartRef} style={{ width: '100%', height: 90 + top.length * 34 }} />
       </>)}
     </>
   );

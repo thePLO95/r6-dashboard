@@ -6,11 +6,11 @@ export type Match = {
   rp: number | null; rpPrev: number | null; rpD: number | null; rank: string | null;
 };
 export type PlayerData = { name: string; avatar: string; playerId: string; matches: Match[] };
-export type Index = { seasons: string[]; players: { name: string; avatar: string; seasonInfo: Record<string, { ranked: number; rated: number }> }[] };
+export type Index = { seasons: string[]; players: { name: string; avatar: string | null; seasonInfo: Record<string, { ranked: number; rated: number }> }[] };
 
 export type Round = [matchId: string, round: number, outcome: 'win' | 'loss' | 'unknown', side: 'atk' | 'def' | null, operatorId: string];
 type Named = { name: string; img: string | null };
-export type Meta = { operators: Record<string, Named>; maps: Record<string, Named> };
+export type Meta = { operators: Record<string, Named>; maps: Record<string, Named>; ranks?: Record<string, string> };
 export type Agg = { n: number; w: number; l: number; u: number; k: number; d: number; a: number; hs: number; r: number; rw: number };
 export type SeasonRating = { start: number; end: number; peak: number; net: number; rated: number };
 export type Aggregates = { seasons: string[]; players: Record<string, Record<string, Record<string, Agg>>>; rating: Record<string, Record<string, SeasonRating>> };

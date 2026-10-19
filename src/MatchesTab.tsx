@@ -46,8 +46,8 @@ export default function MatchesTab({ name }: { name: string }) {
                 <td>{m.map ? meta?.maps[m.map]?.name ?? m.map : '—'}</td>
                 <td>{m.playlist}</td>
                 <td align="center">{m.k == null ? '—' : `${m.k}/${m.d}/${m.a}`}</td>
-                <td style={{ whiteSpace: 'nowrap' }}>{m.rp == null ? '—' : <>{d != null && <b style={{ color: d >= 0 ? '#2e9e5b' : '#d9534f' }}>{d > 0 ? '+' : ''}{d}</b>} → {m.rp}{m.rank ? <small style={{ opacity: 0.7 }}> {m.rank}</small> : null}</>}</td>
-                <td>{mates.length ? <span style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap' }}>{mates.map((n) => <span key={n} style={{ whiteSpace: 'nowrap' }}><Avatar src={avatar.get(n)} size={18} /> {n}</span>)}</span> : <span style={{ opacity: 0.4 }}>—</span>}</td>
+                <td style={{ whiteSpace: 'nowrap' }}>{m.rp == null ? '—' : <>{d != null && <b style={{ color: d >= 0 ? '#2e9e5b' : '#d9534f' }}>{d > 0 ? '+' : ''}{d}</b>} → {m.rp}{m.rank ? <small style={{ opacity: 0.8, marginLeft: 6 }}>{meta?.ranks?.[m.rank] && <img src={meta.ranks[m.rank]} alt="" width={18} height={18} loading="lazy" style={{ verticalAlign: 'middle', marginRight: 3 }} />}{m.rank}</small> : null}</>}</td>
+                <td>{mates.length ? <span style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap' }}>{mates.map((n) => <span key={n} style={{ whiteSpace: 'nowrap' }}><Avatar src={avatar.get(n)} name={n} size={18} /> {n}</span>)}</span> : <span style={{ opacity: 0.4 }}>—</span>}</td>
               </tr>);
           })}</tbody>
         </table>

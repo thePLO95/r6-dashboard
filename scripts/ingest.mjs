@@ -23,7 +23,7 @@ const seasons = load(seasonFile, 'seasonData').map((s) => ({ id: s.id, t: new Da
 const seasonOf = (t) => { for (let i = 0; i < seasons.length - 1; i++) if (t >= seasons[i].t && t < seasons[i + 1].t) return seasons[i].id; return 'none'; };
 const seasonKey = (s) => { const m = /Y(\d+)S(\d+)/.exec(s); return m ? +m[1] * 10 + +m[2] : 0; };
 
-const players = new Map(), seen = new Set(), meta = { operators: {}, maps: {} };
+const players = new Map(), seen = new Set(), meta = { operators: {}, maps: {}, ranks: {} }, rankT = {};
 let none = 0, total = 0;
 
 for (const f of fs.readdirSync(matchesDir).filter((f) => /\.(js|json)$/.test(f)).sort()) {
@@ -35,8 +35,14 @@ for (const f of fs.readdirSync(matchesDir).filter((f) => /\.(js|json)$/.test(f))
     const t = new Date(r.metadata.timestamp).getTime();
     const season = seasonOf(t); if (season === 'none') none++;
     let p = players.get(r.user);
-    if (!p) players.set(r.user, (p = { name: r.user, avatar: seg.metadata?.avatarUrl, playerId: seg.attributes?.playerId, matches: [], rounds: [] }));
+    if (!p) players.set(r.user, (p = { name: r.user, avatar: null, avatarT: -Infinity, playerId: null, matches: [], rounds: [] }));
+    // Avatar: el más reciente que venga informado (una sola partida con avatar basta para conservarlo)
+    const av = seg.metadata?.avatarUrl;
+    if (av && t >= p.avatarT) { p.avatar = av; p.avatarT = t; }
+    if (!p.playerId && seg.attributes?.playerId) p.playerId = seg.attributes.playerId;
     const s = seg.stats ?? {};
+    const rk = s.rankPoints?.metadata;
+    if (rk?.name && rk?.imageUrl && t >= (rankT[fix(rk.name)] ?? -Infinity)) { meta.ranks[fix(rk.name)] = rk.imageUrl; rankT[fix(rk.name)] = t; }
     p.matches.push({
       id: r.attributes.id, season, playlist: r.attributes.sessionType, t, dur: duration(r.metadata.duration),
       mode: r.attributes.sessionMode ?? null, map: r.attributes.sessionMap ?? null, res: seg.metadata?.result,
@@ -66,7 +72,7 @@ for (const p of players.values()) {
     index.seasons.add(m.season);
     if (m.playlist === 'ranked') { const si = (seasonInfo[m.season] ??= { ranked: 0, rated: 0 }); si.ranked++; if (m.rp != null) si.rated++; }
   }
-  const { rounds, ...player } = p;
+  const { rounds, avatarT, ...player } = p;
   fs.writeFileSync(`${outDir}/players/${p.name}.json`, JSON.stringify(player));
   fs.writeFileSync(`${outDir}/players/${p.name}.rounds.json`, JSON.stringify(rounds));
   index.players.push({ name: p.name, avatar: p.avatar, seasonInfo });

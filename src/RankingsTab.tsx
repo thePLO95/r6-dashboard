@@ -38,7 +38,7 @@ export default function RankingsTab() {
           </tr></thead>
           <tbody>{sorted.map((r) => (
             <tr key={r.name} style={{ borderTop: '1px solid #8883' }}>
-              <td style={{ padding: '4px 8px 4px 0', whiteSpace: 'nowrap' }}><Avatar src={avatar.get(r.name)} size={20} /> {r.name}</td>
+              <td style={{ padding: '4px 8px 4px 0', whiteSpace: 'nowrap' }}><Avatar src={avatar.get(r.name)} name={r.name} size={20} /> {r.name}</td>
               {STAT_DEFS.map((d) => { const v = r.values[d.key], p = r.pos[d.key]; return (
                 <td key={d.key} align="center" style={{ padding: '4px 8px', background: sortKey === d.key ? '#4a90e214' : undefined }}>
                   {v == null ? <span style={{ opacity: 0.35 }}>—</span> : <>{d.key === 'net' && v > 0 ? '+' : ''}{v}{d.suffix} <small style={{ color: p && p <= 3 ? MEDAL[p - 1] : undefined, opacity: p && p <= 3 ? 1 : 0.55, fontWeight: p && p <= 3 ? 700 : 400 }}>#{p}</small></>}

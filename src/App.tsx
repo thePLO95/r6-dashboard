@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { loadIndex, loadPlayer, seasonSummary, type Index, type Metric, type PlayerData, type XAxis } from './data';
+import { loadAggregates, loadIndex, loadPlayer, seasonSummary, type Index, type Metric, type PlayerData, type XAxis } from './data';
 import { useLoad } from './hooks';
 import RankEvolution from './RankEvolution';
 import KDAEvolution from './KDAEvolution';
@@ -24,7 +24,14 @@ export default function App() {
   const [metric, setMetric] = useState<Metric>('progress');
   const [x, setX] = useState<XAxis>('match');
 
-  useEffect(() => { loadIndex().then((i) => { setIndex(i); setSel(i.players.slice(0, 2).map((p) => p.name)); setFocus(i.players[0]?.name ?? ''); setSeason(i.seasons[0]); }); }, []);
+  useEffect(() => {
+    Promise.all([loadIndex(), loadAggregates().catch(() => null)]).then(([i, ag]) => {
+      const latest = i.seasons[0];
+      const games = (n: string) => ag?.players[n]?.[latest]?.all?.n ?? 0;   // partidas (todas las playlists) en la última season
+      const top = [...i.players].sort((a, b) => games(b.name) - games(a.name)).slice(0, 5).map((p) => p.name);
+      setIndex(i); setSel(top); setFocus(top[0] ?? ''); setSeason(latest);
+    });
+  }, []);
   useEffect(() => { sel.filter((n) => !cache[n]).forEach((n) => loadPlayer(n).then((p) => setCache((c) => ({ ...c, [n]: p })))); }, [sel]);
   const fp = useLoad(focus ? () => loadPlayer(focus) : null, [focus]);
 
