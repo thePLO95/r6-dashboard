@@ -6,6 +6,7 @@ import { buildRankings, STAT_DEFS } from './rankings';
 import { PLAYLIST_GROUPS } from './stats';
 
 const MEDAL = ['#d4a017', '#9aa0a6', '#b0702f'];
+const STICKY = { position: 'sticky' as const, left: 0, background: 'Canvas', padding: '4px 8px 4px 0', whiteSpace: 'nowrap' as const, zIndex: 1 };
 
 export default function RankingsTab() {
   const ag = useLoad(() => loadAggregates(), []);
@@ -29,16 +30,23 @@ export default function RankingsTab() {
       </div>
       <div style={{ overflowX: 'auto' }}>
         <table style={{ borderCollapse: 'collapse', fontSize: 14, width: '100%' }}>
-          <thead><tr>
-            <th align="left">Jugador</th>
-            {STAT_DEFS.map((d) => (
-              <th key={d.key} onClick={() => setSortKey(d.key)} title={d.hint} style={{ cursor: 'pointer', padding: '4px 8px', whiteSpace: 'nowrap', textDecoration: sortKey === d.key ? 'underline' : 'none' }}>
-                {d.label}{d.rating ? ' ★' : ''}
-              </th>))}
-          </tr></thead>
+          <thead>
+            <tr>
+              <th />
+              {STAT_DEFS.reduce<{ g: string; n: number }[]>((acc, d) => { const l = acc[acc.length - 1]; if (l && l.g === d.group) l.n++; else acc.push({ g: d.group, n: 1 }); return acc; }, [])
+                .map((c, i) => <th key={i} colSpan={c.n} style={{ fontSize: 12, opacity: 0.7, borderBottom: '1px solid #8886', borderLeft: '1px solid #8883', padding: '2px 8px' }}>{c.g}</th>)}
+            </tr>
+            <tr>
+              <th align="left" style={STICKY}>Jugador</th>
+              {STAT_DEFS.map((d) => (
+                <th key={d.key} onClick={() => setSortKey(d.key)} title={d.hint} style={{ cursor: 'pointer', padding: '4px 8px', whiteSpace: 'nowrap', textDecoration: sortKey === d.key ? 'underline' : 'none' }}>
+                  {d.label}
+                </th>))}
+            </tr>
+          </thead>
           <tbody>{sorted.map((r) => (
             <tr key={r.name} style={{ borderTop: '1px solid #8883' }}>
-              <td style={{ padding: '4px 8px 4px 0', whiteSpace: 'nowrap' }}><Avatar src={avatar.get(r.name)} name={r.name} size={20} /> {r.name}</td>
+              <td style={STICKY}><Avatar src={avatar.get(r.name)} name={r.name} size={20} /> {r.name}</td>
               {STAT_DEFS.map((d) => { const v = r.values[d.key], p = r.pos[d.key]; return (
                 <td key={d.key} align="center" style={{ padding: '4px 8px', background: sortKey === d.key ? '#4a90e214' : undefined }}>
                   {v == null ? <span style={{ opacity: 0.35 }}>—</span> : <>{d.key === 'net' && v > 0 ? '+' : ''}{v}{d.suffix} <small style={{ color: p && p <= 3 ? MEDAL[p - 1] : undefined, opacity: p && p <= 3 ? 1 : 0.55, fontWeight: p && p <= 3 ? 700 : 400 }}>#{p}</small></>}
@@ -46,7 +54,7 @@ export default function RankingsTab() {
             </tr>))}</tbody>
         </table>
       </div>
-      <p style={{ fontSize: 13, opacity: 0.7 }}>Pulsa en una columna para ordenar. Los stats de ratio se calculan como Σ/Σ y solo puntúan con el mínimo de partidas elegido. ★ = rank points: solo ranked, ignoran el filtro de playlist y existen desde Y9S3. Pasa el ratón por la cabecera para ver la definición.</p>
+      <p style={{ fontSize: 13, opacity: 0.7 }}>Pulsa en una columna para ordenar. Los stats de ratio se calculan como Σ/Σ y solo puntúan con el mínimo de partidas elegido. ★ = rank points: solo ranked, ignoran el filtro de playlist y existen desde Y9S3. Pasa el ratón por la cabecera para ver la definición. Los «% de rondas» usan solo las partidas que traen esos datos; «First death» puntúa mejor cuanto más bajo. «% clutches ganados» exige al menos 5 clutches disputados.</p>
     </>
   );
 }

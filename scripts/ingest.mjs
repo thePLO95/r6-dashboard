@@ -48,6 +48,9 @@ for (const f of fs.readdirSync(matchesDir).filter((f) => /\.(js|json)$/.test(f))
       mode: r.attributes.sessionMode ?? null, map: r.attributes.sessionMap ?? null, res: seg.metadata?.result,
       k: v(s, 'kills'), d: v(s, 'deaths'), a: v(s, 'assists'), hs: v(s, 'headshots'),
       rounds: v(s, 'roundsPlayed'), rw: v(s, 'roundsWon'),
+      // nº de RONDAS con exactamente N kills, clutches ganados/perdidos, primeras kills y primeras muertes
+      x1: v(s, 'kills1K'), x2: v(s, 'kills2K'), x3: v(s, 'kills3K'), x4: v(s, 'kills4K'), x5: v(s, 'kills5K'),
+      cw: v(s, 'clutches'), cl: v(s, 'clutchesLost'), fb: v(s, 'firstBloods'), fd: v(s, 'firstDeaths'),
       rp: v(s, 'rankPoints'), rpPrev: v(s, 'rankPointsPrevious'), rpD: v(s, 'rankPointsDelta'),
       rank: fix(s.rankPoints?.metadata?.name) ?? null,
     });

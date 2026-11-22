@@ -9,7 +9,9 @@ const dir = process.argv[2] ?? 'public/data';
 const GROUPS = ['ranked', 'standard', 'quick-match', 'siege-cup', 'event', 'arcade', 'dual-front'];
 const group = (p) => (GROUPS.includes(p) ? p : 'other');
 const seasonKey = (s) => { const m = /Y(\d+)S(\d+)/.exec(s); return m ? +m[1] * 10 + +m[2] : 0; };
-const empty = () => ({ n: 0, w: 0, l: 0, u: 0, k: 0, d: 0, a: 0, hs: 0, r: 0, rw: 0 });
+const EVENTS = ['x1', 'x2', 'x3', 'x4', 'x5', 'cw', 'cl', 'fb', 'fd'];
+// eu/er = partidas y rondas que traen los campos de evento (denominador de los % de ronda)
+const empty = () => ({ n: 0, w: 0, l: 0, u: 0, k: 0, d: 0, a: 0, hs: 0, r: 0, rw: 0, eu: 0, er: 0, x1: 0, x2: 0, x3: 0, x4: 0, x5: 0, cw: 0, cl: 0, fb: 0, fd: 0 });
 
 const index = JSON.parse(fs.readFileSync(`${dir}/index.json`, 'utf8'));
 const byId = new Map(), players = {}, rating = {};
@@ -25,6 +27,7 @@ for (const p of index.players) {
       if (m.k != null && m.d != null && m.a != null && m.rounds > 0) {
         A.u++; A.k += m.k; A.d += m.d; A.a += m.a; A.hs += m.hs ?? 0; A.r += m.rounds; A.rw += m.rw ?? 0;
       }
+      if (m.rounds > 0 && EVENTS.every((e) => m[e] != null)) { A.eu++; A.er += m.rounds; for (const e of EVENTS) A[e] += m[e]; }
     }
   }
   const R = (rating[p.name] = {});

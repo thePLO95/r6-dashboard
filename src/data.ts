@@ -3,6 +3,7 @@ export type Match = {
   mode: string | null; map: string | null; res: string;
   k: number | null; d: number | null; a: number | null; hs: number | null;
   rounds: number | null; rw: number | null; dur?: number | null;
+  x1?: number | null; x2?: number | null; x3?: number | null; x4?: number | null; x5?: number | null; cw?: number | null; cl?: number | null; fb?: number | null; fd?: number | null;
   rp: number | null; rpPrev: number | null; rpD: number | null; rank: string | null;
 };
 export type PlayerData = { name: string; avatar: string; playerId: string; matches: Match[] };
@@ -11,7 +12,7 @@ export type Index = { seasons: string[]; players: { name: string; avatar: string
 export type Round = [matchId: string, round: number, outcome: 'win' | 'loss' | 'unknown', side: 'atk' | 'def' | null, operatorId: string];
 type Named = { name: string; img: string | null };
 export type Meta = { operators: Record<string, Named>; maps: Record<string, Named>; ranks?: Record<string, string> };
-export type Agg = { n: number; w: number; l: number; u: number; k: number; d: number; a: number; hs: number; r: number; rw: number };
+export type Agg = { n: number; w: number; l: number; u: number; k: number; d: number; a: number; hs: number; r: number; rw: number; eu: number; er: number; x1: number; x2: number; x3: number; x4: number; x5: number; cw: number; cl: number; fb: number; fd: number };
 export type SeasonRating = { start: number; end: number; peak: number; net: number; rated: number };
 export type Aggregates = { seasons: string[]; players: Record<string, Record<string, Record<string, Agg>>>; rating: Record<string, Record<string, SeasonRating>> };
 export type Squads = Record<string, string[]>;
